@@ -72,7 +72,7 @@ local function getModConfigRenderer(mod)
 	return mod._configRenderer
 end
 
-local function setModEnabled(mod, enabled)
+function loader.setModEnabled(mod, enabled)
 	if enabled == nil then
 		enabled = true
 	end
@@ -146,7 +146,7 @@ function loader.deleteOldLogs()
 	log("took "..duration.." seconds to delete "..deletedCount.." old log files", "BBP_silent")
 end
 
-local function loadModMetadata(modDir)
+function loader.loadModMetadata(modDir)
 	if not love.filesystem.getInfo(modDir .. "/mod.json", "file") then return end
 	local modJson = dpf.loadJson(modDir .. "/mod.json")
 
@@ -174,7 +174,7 @@ local function loadModMetadata(modDir)
 		end,
 		__newindex = function(t, k, v)
 			if k == "enabled" then
-				return setModEnabled(t, v)
+				return loader.setModEnabled(t, v)
 			end
 			error(("Attmepted to create new field '%s' on mod"):format(k))
 		end
@@ -330,7 +330,7 @@ function loader.loadMods() -- loads mod data, assets, mod icons etc.
 	end
 
 	for _, modDir in ipairs(love.filesystem.getDirectoryItems(modsPath)) do
-		local mod = loadModMetadata(modsPath.."/"..modDir)
+		local mod = loader.loadModMetadata(modsPath.."/"..modDir)
 		if not mod then goto continue end
 
 		loader.activeMods[mod.id] = mod.enabled or nil -- not including disabled mods
